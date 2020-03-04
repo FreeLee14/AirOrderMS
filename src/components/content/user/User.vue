@@ -2,7 +2,7 @@
 <template>
   <div>
     <el-button round @click="login">登录</el-button>
-    <el-button round>注册</el-button>
+    <el-button round @click="regist">注册</el-button>
     <el-button round>注销</el-button>
   </div>
 </template>
@@ -25,6 +25,12 @@ export default {
         query: {
           dialogFormVisible: true
         }
+      })
+    },
+    regist () {
+      // 请求注册组件
+      this.$router.replace({
+        path: '/regist'
       })
     }
   }

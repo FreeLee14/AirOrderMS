@@ -2,6 +2,7 @@
 <template>
   <div>
     <slot></slot>
+    <h1>默认显示的内容</h1>
   </div>
 </template>
 

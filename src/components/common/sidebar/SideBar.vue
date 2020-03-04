@@ -23,6 +23,6 @@ export default {
 </script>
 <style scoped>
   #side-bar {
-    background-color: aqua;
+    /* background-color: rgb(167, 190, 190); */
   }
 </style>

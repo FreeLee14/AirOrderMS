@@ -16,12 +16,16 @@ export default {
 
   computed: {},
 
-  methods: {}
+  methods: {
+  }
 }
 
 </script>
 <style scoped>
-  .side-bar-item {
-    height: 150px;
+  .side-bar-item{
+    height: 220px;
+    width: 150px;
+    position: relative;
+    left: 60px;
   }
 </style>
