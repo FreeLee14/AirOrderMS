@@ -1,13 +1,12 @@
-<!-- 侧边栏父组件 -->
+<!-- 查看机票组件 -->
 <template>
-  <div id="side-bar">
-    <slot></slot>
+  <div>
+    <h1>我是查看机票显示页面</h1>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'sidebar',
   data () {
     return {
     }
@@ -21,6 +20,5 @@ export default {
 }
 
 </script>
-<style scoped>
-
+<style  scoped>
 </style>

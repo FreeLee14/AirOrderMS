@@ -23,33 +23,39 @@
               <el-menu
                 router
                 class="elmenu"
-                background-color="#545c64"
-                text-color="#fff"
+                background-color="#E4E7ED"
+                text-color="#303133"
                 active-text-color="#ffd04b">
                 <SideBarItem>
-                  <el-menu-item index="/regist" >
+                  <el-menu-item index="/airticketmain" >
                     <template slot="title">
-                      <i class="el-icon-location"></i>
+                      <i class="el-icon-s-promotion"></i>
                       <span>机票业务</span>
                     </template>
                   </el-menu-item>
                 </SideBarItem>
                 <SideBarItem>
-                  <el-menu-item index="2">
-                    <i class="el-icon-menu"></i>
-                    <span slot="title">导航二</span>
+                  <el-menu-item index="/travel">
+                    <i class="el-icon-ship"></i>
+                    <span slot="title">旅游宝典</span>
                   </el-menu-item>
                 </SideBarItem>
                 <SideBarItem>
-                  <el-menu-item index="3" >
-                    <i class="el-icon-document"></i>
-                    <span slot="title">导航三</span>
+                  <el-menu-item index="/ordermanage" >
+                    <i class="el-icon-s-goods"></i>
+                    <span slot="title">订单管理</span>
                   </el-menu-item>
                 </SideBarItem>
                 <SideBarItem>
-                  <el-menu-item index="4">
+                  <el-menu-item index="/airdynamic">
                     <i class="el-icon-setting"></i>
-                    <span slot="title">导航四</span>
+                    <span slot="title">航班动态</span>
+                  </el-menu-item>
+                </SideBarItem>
+                <SideBarItem>
+                  <el-menu-item index="/settings">
+                    <i class="el-icon-setting"></i>
+                    <span slot="title">设置</span>
                   </el-menu-item>
                 </SideBarItem>
               </el-menu>

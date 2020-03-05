@@ -1,13 +1,12 @@
-<!-- 侧边栏父组件 -->
+<!-- 旅游宝典主组件 -->
 <template>
-  <div id="side-bar">
-    <slot></slot>
+  <div>
+    <h1>我是旅游宝典页面</h1>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'sidebar',
   data () {
     return {
     }
@@ -17,10 +16,11 @@ export default {
 
   computed: {},
 
+  mounted: {},
+
   methods: {}
 }
 
 </script>
-<style scoped>
-
+<style lang='scss' scoped>
 </style>

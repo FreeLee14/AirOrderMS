@@ -3,7 +3,7 @@
   <div>
     <el-button round @click="login">登录</el-button>
     <el-button round @click="regist">注册</el-button>
-    <el-button round>注销</el-button>
+    <el-button round @click="main">主页</el-button>
   </div>
 </template>
 
@@ -31,6 +31,12 @@ export default {
       // 请求注册组件
       this.$router.replace({
         path: '/regist'
+      })
+    },
+    main () {
+      // 请求显示默认主页，因为时单页面富应用所以尽量将操作凝聚在按钮上
+      this.$router.replace({
+        path: '/'
       })
     }
   }

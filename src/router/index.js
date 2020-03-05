@@ -4,6 +4,14 @@ import VueRouter from 'vue-router'
 const Login = () => import('views/user/Login')
 const Regist = () => import('views/user/Regist')
 const MainItem = () => import('components/common/main/MainItem')
+const AirTicketMain = () => import('views/airticket/AirTicketMain')
+const OrderManageMain = () => import('views/ordermanage/OrderManageMain')
+const TravelMain = () => import('views/travel/TravelMain')
+const AirDynamicMain = () => import('views/airdynamic/AirDynamicMain')
+const SettingsMain = () => import('views/settings/SettingsMain')
+const AirTicketPre = () => import('views/airticket/AirTicketPre')
+const AirTicketDetail = () => import('views/airticket/AirTicketDetail')
+const MyRoute = () => import('views/airticket/MyRoute')
 
 Vue.use(VueRouter)
 
@@ -23,6 +31,54 @@ const routes = [
     // 注册
     path: '/regist',
     component: Regist
+  },
+  {
+    // 机票业务
+    path: '/airticketmain',
+    component: AirTicketMain,
+    // 嵌套路由
+    children: [
+      {
+        // 默认显示机票预定页面
+        path: '',
+        component: AirTicketPre
+      },
+      {
+        // 机票预定页面
+        path: 'preorder',
+        component: AirTicketPre
+      },
+      {
+        // 查看机票页面
+        path: 'airticketdetail',
+        component: AirTicketDetail
+      },
+      {
+        // 我的行程页面
+        path: 'myroute',
+        component: MyRoute
+      }
+    ]
+  },
+  {
+    // 订单管理
+    path: '/ordermanage',
+    component: OrderManageMain
+  },
+  {
+    // 旅游宝典
+    path: '/travel',
+    component: TravelMain
+  },
+  {
+    // 航班动态
+    path: '/airdynamic',
+    component: AirDynamicMain
+  },
+  {
+    // 设置
+    path: '/settings',
+    component: SettingsMain
   }
 ]
 

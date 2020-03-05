@@ -23,9 +23,8 @@ export default {
 </script>
 <style scoped>
   .side-bar-item{
-    height: 220px;
-    width: 150px;
+    height: 185px;
+    width: 260px;
     position: relative;
-    left: 60px;
   }
 </style>

@@ -24,8 +24,8 @@ export default {
 <style scoped>
   #top-bar {
     display: flex;
-    background-color: #f6f6f6;
-    position: fixed;
+    background-color: white;
+    position: relative;
     left: 0;
     right: 0;
     top: 10;

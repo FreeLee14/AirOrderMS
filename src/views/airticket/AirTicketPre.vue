@@ -1,13 +1,12 @@
-<!-- 侧边栏父组件 -->
+<!-- 机票业务的导航按钮组件 -->
 <template>
-  <div id="side-bar">
-    <slot></slot>
+  <div>
+    <h1>我是机票预定的具体信息</h1>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'sidebar',
   data () {
     return {
     }
@@ -21,6 +20,5 @@ export default {
 }
 
 </script>
-<style scoped>
-
+<style lang='scss' scoped>
 </style>

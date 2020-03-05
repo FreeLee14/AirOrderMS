@@ -1,13 +1,12 @@
-<!-- 侧边栏父组件 -->
+<!-- 我的行程组件 -->
 <template>
-  <div id="side-bar">
-    <slot></slot>
+  <div>
+    <h1>我的行程显示页面</h1>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'sidebar',
   data () {
     return {
     }
@@ -21,6 +20,5 @@ export default {
 }
 
 </script>
-<style scoped>
-
+<style lang='scss' scoped>
 </style>
