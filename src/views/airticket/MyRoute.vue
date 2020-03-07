@@ -1,18 +1,23 @@
 <!-- 我的行程组件 -->
 <template>
   <div>
-    <h1>我的行程显示页面</h1>
+    <MyRouteItem></MyRouteItem>
   </div>
 </template>
 
 <script>
+// 引入“我的行程详情”组件
+import MyRouteItem from 'views/airticket/MyRouteItem'
+
 export default {
   data () {
     return {
     }
   },
 
-  components: {},
+  components: {
+    MyRouteItem
+  },
 
   computed: {},
 

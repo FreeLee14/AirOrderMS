@@ -12,6 +12,7 @@ const SettingsMain = () => import('views/settings/SettingsMain')
 const AirTicketPre = () => import('views/airticket/AirTicketPre')
 const AirTicketDetail = () => import('views/airticket/AirTicketDetail')
 const MyRoute = () => import('views/airticket/MyRoute')
+const TicketsByPage = () => import('views/airticket/TicketsByPage')
 
 Vue.use(VueRouter)
 
@@ -79,6 +80,11 @@ const routes = [
     // 设置
     path: '/settings',
     component: SettingsMain
+  },
+  {
+    // 请求分页显示机票组件
+    path: '/ticketsbypage',
+    component: TicketsByPage
   }
 ]
 
