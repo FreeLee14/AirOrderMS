@@ -24,6 +24,9 @@
 </template>
 
 <script>
+// 引入异步网络请求函数_登录函数
+import { loginUser } from 'network/user'
+
 export default {
   name: 'login',
   data () {
@@ -46,11 +49,19 @@ export default {
   methods: {
     // 确认登录方法
     ensure () {
-      this.dialogFormVisible = false
-      this.$router.replace('/')
-      console.log(this.form.name)
-      console.log(this.form.region)
-      console.log(this.form.password)
+      // 进行网络请求
+      loginUser(this.login.name, this.login.passwordm, this.$store.token, this.$store.isLogin)
+        .then(res => {
+          console.log(res)
+          // 成功回调函数后，关闭dialog提示窗口，同时延迟3s跳转回主页
+          this.dialogFormVisible = false
+          setTimeout(() => {
+            this.$router.replace('/')
+          }, 3000)
+        })
+        .cache(err => {
+          console.log(err)
+        })
     },
     // 取消登录方法
     cancle () {

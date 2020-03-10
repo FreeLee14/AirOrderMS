@@ -2,8 +2,8 @@
 <template>
   <div class="regist">
     <el-form :rules="rules" ref="regist"  label-width="80px" :model="regist">
-      <el-form-item label="用户名" prop="username" :readonly="readonlyInput" @focus="cancelReadOnly">
-        <el-input v-model="regist.username"></el-input>
+      <el-form-item label="用户名" prop="name" :readonly="readonlyInput" @focus="cancelReadOnly">
+        <el-input v-model="regist.name"></el-input>
       </el-form-item>
       <el-form-item label="电话" prop="phone" :readonly="readonlyInput" @focus="cancelReadOnly">
         <el-input v-model="regist.phone"></el-input>
@@ -29,6 +29,11 @@
 </template>
 
 <script>
+// 引入qs对axios封装成的数据解析为json格式的字符串
+import qs from 'qs'
+// 引入网络请求函数_注册用户函数
+import { registUser } from 'network/user'
+
 export default {
   name: 'regist',
   data () {
@@ -79,7 +84,7 @@ export default {
     }
     return {
       regist: {
-        username: '',
+        name: '',
         phone: '',
         email: '',
         password: '',
@@ -88,7 +93,7 @@ export default {
       agree: false,
       // 定义校验规则
       rules: {
-        username: [
+        name: [
           { validator: validUsername, trigger: 'blur' }
         ],
         phone: [
@@ -120,10 +125,46 @@ export default {
     },
     // 注册方法
     registForm (formName) {
-      // 先进行整理表单的校验,进行校验时，表单内部的属性值必须都要有与之对应的校验方法
+      // 先进行整体表单的校验,进行校验时，表单内部的属性值必须都要有与之对应的校验方法
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          console.log('success')
+          // 向后端api请求注册方法，将前端的数据使用qs转换为json字符串
+          registUser(
+            [
+              function (data) {
+                return qs.stringify(data)
+              }
+            ],
+            {
+              name: this.regist.name,
+              password: this.regist.password,
+              phone: this.regist.phone,
+              email: this.regist.email,
+              ensurepassword: this.regist.ensurepassword
+            }
+          ).then(res => {
+            // 成功执行回调函数
+            if (res) {
+              this.$message({
+                message: '恭喜你，注册成功',
+                type: 'success'
+              })
+              // 注册成功延迟3s跳转至首页
+              setTimeout(() => {
+                this.$router.replace({
+                  path: '/'
+                })
+              }, 3000)
+            }
+          }).cache(err => {
+            // 失败执行的回调函数
+            if (err) {
+              this.$message({
+                message: '注册失败',
+                type: 'warning'
+              })
+            }
+          })
         } else {
           console.log('error submit!!')
           return false
