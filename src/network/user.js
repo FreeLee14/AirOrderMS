@@ -22,3 +22,13 @@ export function loginUser (name, password, token, isLogin) {
     }
   })
 }
+// 封装注销的异步请求，将redis缓存的令牌进行清空
+export function logoutUser (name) {
+  return request({
+    url: '/airorderms/user',
+    method: 'delete',
+    params: {
+      name
+    }
+  })
+}

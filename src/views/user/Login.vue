@@ -50,30 +50,42 @@ export default {
     // 确认登录方法
     ensure () {
       let token = this.$store.state.token
-      const isLogin = this.$store.state.isLogin
+      let isLogin = this.$store.state.isLogin
       // 进行网络请求
       loginUser(this.login.name, this.login.password, token, isLogin)
         .then(res => {
-          // 成功回调函数后，关闭dialog提示窗口，同时延迟3s跳转回主页
+        // 成功回调函数后，关闭dialog提示窗口，同时延迟3s跳转回主页
           this.dialogFormVisible = false
+          // 判断如果返回的token值不为空，则提醒登录成功
           if (res != null) {
             console.log(res)
+            // 登录成功之后将公共的属性值进行赋值
             token = res
+            isLogin = 1
+            this.$store.state.name = this.login.name
+            this.$store.commit('changeState', {
+              token: res,
+              isLogin: 1,
+              name: this.login.name
+            })
             this.$message({
               message: '登录成功',
               type: 'success'
             })
             setTimeout(() => {
+              console.log(this.$store.state.name)
+              console.log(isLogin)
               this.$router.replace('/')
             }, 3000)
           } else {
+          // 如果为null则提醒用户名或密码不对
             this.$message({
               message: '用户名或密码不对',
               type: 'warning'
             })
           }
         })
-        .cache(err => {
+        .catch(err => {
           console.log(err)
         })
     },

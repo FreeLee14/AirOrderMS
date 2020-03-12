@@ -156,7 +156,7 @@ export default {
                 })
               }, 3000)
             }
-          }).cache(err => {
+          }).catch(err => {
             // 失败执行的回调函数
             if (err) {
               this.$message({
