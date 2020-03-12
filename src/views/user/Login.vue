@@ -49,15 +49,29 @@ export default {
   methods: {
     // 确认登录方法
     ensure () {
+      let token = this.$store.state.token
+      const isLogin = this.$store.state.isLogin
       // 进行网络请求
-      loginUser(this.login.name, this.login.passwordm, this.$store.token, this.$store.isLogin)
+      loginUser(this.login.name, this.login.password, token, isLogin)
         .then(res => {
-          console.log(res)
           // 成功回调函数后，关闭dialog提示窗口，同时延迟3s跳转回主页
           this.dialogFormVisible = false
-          setTimeout(() => {
-            this.$router.replace('/')
-          }, 3000)
+          if (res != null) {
+            console.log(res)
+            token = res
+            this.$message({
+              message: '登录成功',
+              type: 'success'
+            })
+            setTimeout(() => {
+              this.$router.replace('/')
+            }, 3000)
+          } else {
+            this.$message({
+              message: '用户名或密码不对',
+              type: 'warning'
+            })
+          }
         })
         .cache(err => {
           console.log(err)
