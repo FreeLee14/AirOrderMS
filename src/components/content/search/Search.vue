@@ -38,7 +38,10 @@
             range-separator="至"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            @change="chooseDate">
+            @change="chooseDate"
+            format="yyyy 年 MM 月 dd 日"
+            value-format="yyyy-MM-dd"
+            >
           </el-date-picker>
         </td>
         <td><font class="font">人数 :</font></td>
@@ -56,6 +59,7 @@
 
 <script>
 export default {
+  props: ['ticketView'],
   data () {
     return {
       options: [
@@ -75,7 +79,7 @@ export default {
       // 目的地
       destination: '',
       // 往返日期
-      date: '',
+      date: [],
       // 人数
       number: ''
     }
@@ -84,6 +88,15 @@ export default {
   components: {},
 
   computed: {},
+
+  mounted () {
+    // 初始化数据显示，从父组件获取子组件的数据
+    this.$nextTick(function () {
+      setTimeout(() => {
+        this.initInfo()
+      }, 2000)
+    })
+  },
 
   methods: {
     handleChange () {
@@ -98,6 +111,13 @@ export default {
     // }
     search () {
       alert('查询数据跳转到查看机票组件')
+    },
+    initInfo () {
+      console.log(this.ticketView)
+      this.value = this.ticketView.isreturn
+      this.departure = this.ticketView.departure
+      this.destination = this.ticketView.destination
+      this.date = [this.ticketView.startDate, this.ticketView.startDate]
     }
   }
 }

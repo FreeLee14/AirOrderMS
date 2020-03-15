@@ -2,19 +2,31 @@
 <template>
   <div class="main-nominate">
     <h1>我是推荐部分</h1>
-    <div v-for="item in 8 " :key="item" class="item-nominate">
-      <span class="departure">北 京 <i class="el-icon-s-promotion"></i></span>
-      <span class="destination">天 津</span>
-      <span class="money">￥256</span>
-      <el-button class="buying" type="warning" @click="buying" round>立 抢</el-button>
+    <div v-for="(item, index) in nominateinfos " :key="index" class="item-nominate">
+      <span class="departure">{{item.departure}} <i class="el-icon-s-promotion"></i></span>
+      <span class="destination">{{item.destination}}</span>
+      <span class="money">{{item.money}}</span>
+      <el-button class="buying" type="warning" @click="buying(item.id)" round>立 抢</el-button>
     </div>
   </div>
 </template>
 
 <script>
+// 导入机票推荐异步请求函数
+import { findRandom } from 'network/ticket'
+
 export default {
   data () {
     return {
+      nominateinfos: [
+        {
+          id: 0,
+          departure: '',
+          destination: '',
+          money: ''
+        }
+      ],
+      address: '天津'
     }
   },
 
@@ -22,9 +34,26 @@ export default {
 
   computed: {},
 
+  mounted () {
+    this.$nextTick(() => {
+      this.initInfo()
+    })
+  },
+
   methods: {
-    buying () {
-      alert('点击抢购')
+    buying (id) {
+      this.$router.replace({
+        path: '/buyticket/' + id
+      })
+    },
+    initInfo () {
+      findRandom(this.address)
+        .then(res => {
+          this.nominateinfos = res
+        })
+        .catch(fail => {
+
+        })
     }
   }
 }
