@@ -13,6 +13,7 @@ const AirTicketPre = () => import('views/airticket/AirTicketPre')
 const AirTicketDetail = () => import('views/airticket/AirTicketDetail')
 const MyRoute = () => import('views/airticket/MyRoute')
 const TicketsByPage = () => import('views/airticket/TicketsByPage')
+const BuyTicket = () => import('components/content/ticket/BuyTicket')
 
 Vue.use(VueRouter)
 
@@ -85,6 +86,11 @@ const routes = [
     // 请求分页显示机票组件
     path: '/ticketsbypage',
     component: TicketsByPage
+  },
+  {
+    // 购买机票组件
+    path: '/buyticket/:id',
+    component: BuyTicket
   }
 ]
 
