@@ -6,15 +6,10 @@ import com.zrwang.airorderms.entity.dto.NominateTicket;
 import com.zrwang.airorderms.mapper.TicketMapper;
 import com.zrwang.airorderms.service.TicketService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
 

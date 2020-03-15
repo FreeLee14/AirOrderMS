@@ -1,31 +1,12 @@
-package com.zrwang.airorderms.entity;
+package com.zrwang.airorderms.entity.vo;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-
-import java.sql.Timestamp;
-import java.util.Date;
-import com.baomidou.mybatisplus.annotation.TableId;
-import java.io.Serializable;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.experimental.Accessors;
 
-/**
- * <p>
- * 
- * </p>
- *
- * @author zrwang
- * @since 2020-03-13
- */
+import java.util.Date;
+
 @Data
-@EqualsAndHashCode(callSuper = false)
-@Accessors(chain = true)
-public class Ticket implements Serializable {
+public class TicketView {
 
-    private static final long serialVersionUID=1L;
-
-    @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
 
     /**
@@ -54,14 +35,24 @@ public class Ticket implements Serializable {
     private String destination;
 
     /**
+     * 起飞日期
+     */
+    private String startDate;
+
+    /**
      * 起飞时间
      */
-    private Timestamp startTime;
+    private String startTime;
 
     /**
      * 行程时间
      */
     private String consume;
+
+    /**
+     * 结束时间
+     */
+    private String endTime;
 
     /**
      * 机票数量
@@ -77,10 +68,4 @@ public class Ticket implements Serializable {
      * 是否往返
      */
     private Integer isreturn;
-
-    /**
-     * 结束日期
-     */
-    private Timestamp endTime;
-
 }

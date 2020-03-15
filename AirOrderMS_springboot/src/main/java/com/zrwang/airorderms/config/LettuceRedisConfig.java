@@ -41,7 +41,6 @@ public class LettuceRedisConfig {
         //初始化一个writer，属于创建rediscachemanager的一个依赖对象
         RedisCacheWriter redisCacheWriter = RedisCacheWriter.nonLockingRedisCacheWriter(redisConnectionFactory);
 
-        //Employee.class针对employee设定单独的一个cachemanager
         Jackson2JsonRedisSerializer jackson2JsonRedisSerializer = new Jackson2JsonRedisSerializer(Serializable.class);
         RedisSerializationContext.SerializationPair<Serializable> pair = RedisSerializationContext.SerializationPair.fromSerializer(jackson2JsonRedisSerializer);
         //创建RedisCacheConfiguration,属于创建rediscachemanager的一个依赖对象,使用defaultCacheConfig()创建的创建RedisCacheConfiguration对象默认开启了一些配置
@@ -50,9 +49,9 @@ public class LettuceRedisConfig {
 				SerializationPair.fromSerializer(RedisSerializer.string()),
 				SerializationPair.fromSerializer(RedisSerializer.java(classLoader)), conversionService
         * */
-        RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig().serializeValuesWith(pair);
+        RedisCacheConfiguration redisCacheConfiguration = RedisCacheConfiguration.defaultCacheConfig().serializeValuesWith(pair).entryTtl(Duration.ofSeconds(3600));
         //设定缓存默认超时期时间为30s这里用到了jdk1.8的duration
-        redisCacheConfiguration.entryTtl(Duration.ofSeconds(10));
+//        redisCacheConfiguration.entryTtl(Duration.ofSeconds(3000));
         redisCacheConfiguration.usePrefix();
         //创建rediscachemanager
         RedisCacheManager redisCacheManager = new RedisCacheManager(redisCacheWriter, redisCacheConfiguration);
