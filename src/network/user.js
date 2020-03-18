@@ -32,3 +32,20 @@ export function logoutUser (name) {
     }
   })
 }
+// 完善个人信息的异步请求
+export function prefactUser (trans, data, name) {
+  return request({
+    url: '/airorderms/user/' + name,
+    method: 'post',
+    // 针对后端接收数据的请求头类型进行修改
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    transformRequest: trans,
+    data: data
+  })
+}
+// 封装查看全部信息的异步请求
+export function findByName (name) {
+  return request({
+    url: '/airorderms/user/' + name
+  })
+}

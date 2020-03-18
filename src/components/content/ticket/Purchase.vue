@@ -9,7 +9,7 @@
         <div class="departure">{{ticketInfo.departure}}</div>
         <div class="destination">{{ticketInfo.destination}}</div>
         <div class="money"><font class="font">￥{{ticketInfo.money}}</font></div>
-        <div class="btn"><el-button type="warning" round>订票</el-button></div>
+        <div class="btn"><el-button type="warning" @click="purchase(ticketInfo.id)" round>订票</el-button></div>
     </div>
   </div>
 </template>
@@ -28,7 +28,12 @@ export default {
 
   computed: {},
 
-  methods: {}
+  methods: {
+    purchase (id) {
+      // 在进行订票时会进行校验当前用户信息，如果没有登录则提示登录，如果完善信息则提示需要完善信息
+      console.log(id)
+    }
+  }
 }
 
 </script>

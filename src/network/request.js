@@ -9,6 +9,7 @@ export function request (config) {
   })
   // 设置axios拦截器(请求拦截)
   instance.interceptors.request.use(config => {
+    console.log(config)
     return config
   }, err => {
     console.log(err)
