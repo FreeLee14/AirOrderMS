@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Maven: javax.el:javax.el-api:3.0.1-b06">
+    <CLASSES>
+      <root url="jar://F:/Resource/Maven/repository/javax/el/javax.el-api/3.0.1-b06/javax.el-api-3.0.1-b06.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://F:/Resource/Maven/repository/javax/el/javax.el-api/3.0.1-b06/javax.el-api-3.0.1-b06-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://F:/Resource/Maven/repository/javax/el/javax.el-api/3.0.1-b06/javax.el-api-3.0.1-b06-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

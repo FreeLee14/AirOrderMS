@@ -52,12 +52,11 @@ public class TicketController {
         //获取开始日期
         String startDate = startDateStr.substring(0, 10);
         // 获取开始时间
-        String startTime = startDateStr.substring(12,16);
+        String startTime = startDateStr.substring(11,16);
         //获取结束时间
-        String endTime = new SimpleDateFormat("hh:mm:ss").format(ticket.getEndTime()).substring(1,5);
+        String endTime = new SimpleDateFormat("hh:mm:ss").format(ticket.getEndTime()).substring(0,5);
 
         TicketView ticketView = new TicketView();
-
 
         ticketView.setId(ticket.getId());
         ticketView.setConsume(ticket.getConsume());

@@ -1,0 +1,14 @@
+<component name="ArtifactManager">
+  <artifact type="war" name="springMVC_test02_upload:war">
+    <output-path>$PROJECT_DIR$/target</output-path>
+    <properties id="maven-jee-properties">
+      <options>
+        <module>springMVC_test02_upload</module>
+        <packaging>war</packaging>
+      </options>
+    </properties>
+    <root id="archive" name="springMVC_test02_upload.war">
+      <element id="artifact" artifact-name="springMVC_test02_upload:war exploded" />
+    </root>
+  </artifact>
+</component>

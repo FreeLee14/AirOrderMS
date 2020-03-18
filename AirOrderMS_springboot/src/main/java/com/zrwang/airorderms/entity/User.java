@@ -42,9 +42,11 @@ public class User implements Serializable {
 
     private String idCard;
 
-    private Date birthday;
+    private String birthday;
 
     private String address;
+
+    private String imgInfo;
 
 
 }

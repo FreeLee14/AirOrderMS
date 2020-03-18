@@ -2,9 +2,13 @@ package com.zrwang.airorderms.controller;
 
 
 
+import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.segments.MergeSegments;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.zrwang.airorderms.entity.RegistUser;
 import com.zrwang.airorderms.entity.User;
+import com.zrwang.airorderms.entity.dto.PrefactUser;
 import com.zrwang.airorderms.mapper.UserMapper;
 import com.zrwang.airorderms.service.UserService;
 import org.slf4j.Logger;
@@ -12,7 +16,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
 import java.sql.Date;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
@@ -62,7 +69,7 @@ public class UserController {
         user.setPhone(registUser.getPhone());
         user.setEmail(registUser.getEmail());
         user.setIdCard("-1");
-        user.setBirthday(Date.valueOf("1970-01-01"));
+        user.setBirthday("19700101");
         user.setAddress("-1");
 
         boolean save = userService.save(user);
@@ -136,6 +143,47 @@ public class UserController {
         }
 
         return delete;
+
+    }
+
+    // 在设置页面进行信息完善的api,进行图片信息流的保存
+    @PostMapping("/user/{name}")
+    public boolean prefactInfo(@PathVariable(value = "name" ) String name , PrefactUser prefactUser){
+
+        Logger logger = LoggerFactory.getLogger(UserController.class);
+
+        // 组装update语句实体
+        UpdateWrapper<User> userWrapper = new UpdateWrapper<>();
+
+        userWrapper.set("gender",prefactUser.getGender());
+        userWrapper.set("id_card",prefactUser.getIdCard());
+        userWrapper.set("birthday",prefactUser.getBirthday());
+        userWrapper.set("address",prefactUser.getAddress());
+        userWrapper.set("img_info",prefactUser.getImgInfo());
+
+        userWrapper.eq("name",name);
+
+        // 进行更新
+        boolean b = userService.update(userWrapper);
+
+        if( b ) {
+            logger.info("完善成功");
+        }else {
+            logger.info("完善失败");
+        }
+        return b;
+
+    }
+    // 根据名称来查询用户的所有信息,数据库中用户表姓名字段已添加索引，所以查询性能并未降低
+    @GetMapping("/user/{name}")
+    public User findByName (@PathVariable(value = "name") String name){
+
+        QueryWrapper<User> userWrapper = new QueryWrapper<>();
+
+        userWrapper.eq("name",name);
+        User user = userService.getOne(userWrapper);
+
+        return user;
 
     }
 }
