@@ -26,12 +26,17 @@ export default {
   components: {},
 
   computed: {
-    // 获取公共管理仓库中的登录状态,只有在计算属性中定义才能动态的获取更新后的数据
+    // 获取公共管理仓库中的登录状态,只有在计算属性中定义才能动态的获取更新后的数据 this.$store.state.isLogin this.$store.state.name
     isLogin () {
-      return this.$store.state.isLogin
+      if (localStorage.getItem('isLogin') != null) {
+        console.log(localStorage.getItem('isLogin'))
+        return localStorage.getItem('isLogin')
+      } else {
+        return this.$store.state.isLogin
+      }
     },
     name () {
-      return this.$store.state.name
+      return localStorage.getItem('name')
     }
   },
   methods: {
@@ -57,7 +62,7 @@ export default {
       })
     },
     logout () {
-      logoutUser(this.$store.state.name)
+      logoutUser(localStorage.getItem('name'))
         .then(res => {
           if (res) {
             setTimeout(() => {

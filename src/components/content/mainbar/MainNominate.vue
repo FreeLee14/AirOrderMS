@@ -1,6 +1,6 @@
 <!-- 默认主页MainItem.Vue显示的推荐机票信息的子组件 -->
 <template>
-  <div class="main-nominate">
+  <div v-loading="loading" class="main-nominate">
     <h1>我是推荐部分</h1>
     <div v-for="(item, index) in nominateinfos " :key="index" class="item-nominate">
       <span class="departure">{{item.departure}} <i class="el-icon-s-promotion"></i></span>
@@ -26,7 +26,8 @@ export default {
           money: ''
         }
       ],
-      address: '天津'
+      address: '天津',
+      loading: true
     }
   },
 
@@ -49,6 +50,9 @@ export default {
     initInfo () {
       findRandom(this.address)
         .then(res => {
+          if (res !== null) {
+            this.loading = false
+          }
           this.nominateinfos = res
         })
         .catch(fail => {

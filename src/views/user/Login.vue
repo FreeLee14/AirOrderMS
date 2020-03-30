@@ -60,13 +60,19 @@ export default {
           if (res != null) {
             console.log(res)
             // 登录成功之后将公共的属性值进行赋值
-            token = res
+            token = res.token
+            this.$store.state.id = res.id
             isLogin = 1
-            this.$store.state.name = this.login.name
+            this.$store.state.email = res.email
+            this.$store.state.name = res.name
+            this.$store.state.phone = res.phone
             this.$store.commit('changeState', {
-              token: res,
+              token: res.token,
               isLogin: 1,
-              name: this.login.name
+              name: res.name,
+              id: res.id,
+              email: res.email,
+              phone: res.phone
             })
             this.$message({
               message: '登录成功',

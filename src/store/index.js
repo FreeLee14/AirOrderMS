@@ -10,7 +10,13 @@ const store = new Vuex.Store({
     // 定义一个是否登录的状态属性0代表未登录，1代表已登录
     isLogin: 0,
     // 登陆成功后用户名称需要在各个显示组件中进行展示所以需要定义未公共变量
-    name: ''
+    name: '',
+    // 登录成功后维护用户id
+    id: 0,
+    // 邮箱
+    email: '',
+    // 电话
+    phone: ''
   },
   // 公共的计算属性
   getters: {
@@ -23,11 +29,29 @@ const store = new Vuex.Store({
       state.token = payload.token
       state.isLogin = payload.isLogin
       state.name = payload.name
+      state.id = payload.id
+      state.email = payload.email
+      state.phone = payload.phone
+      // 使用浏览器的本地缓存进行存储Vuex中用来管理的状态
+      localStorage.setItem('isLogin', payload.isLogin)
+      localStorage.setItem('name', payload.name)
+      localStorage.setItem('id', payload.id)
+      localStorage.setItem('email', payload.email)
+      localStorage.setItem('phone', payload.phone)
     },
     logoutState (state) {
       state.token = ''
       state.isLogin = 0
       state.name = ''
+      state.id = 0
+      state.email = ''
+      state.phone = ''
+      // 退出登录时清空本地缓存的个人数据，以免影响下次使用
+      localStorage.removeItem('isLogin')
+      localStorage.removeItem('name')
+      localStorage.removeItem('id')
+      localStorage.removeItem('email')
+      localStorage.removeItem('phone')
     }
   },
   // 异步方法

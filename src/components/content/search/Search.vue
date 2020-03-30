@@ -73,7 +73,7 @@ export default {
         }
       ],
       // 单反程选项
-      value: '',
+      value: 0,
       // 出发地
       departure: '',
       // 目的地
@@ -114,10 +114,13 @@ export default {
     },
     initInfo () {
       console.log(this.ticketView)
-      this.value = this.ticketView.isreturn
-      this.departure = this.ticketView.departure
-      this.destination = this.ticketView.destination
-      this.date = [this.ticketView.startDate, this.ticketView.startDate]
+      // 根据typeof 进行对象的判断是否定义
+      if (typeof this.ticketView !== 'undefined') {
+        this.value = this.ticketView.isreturn
+        this.departure = this.ticketView.departure
+        this.destination = this.ticketView.destination
+        this.date = [this.ticketView.startDate, this.ticketView.startDate]
+      }
     }
   }
 }

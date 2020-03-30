@@ -14,6 +14,8 @@ const AirTicketDetail = () => import('views/airticket/AirTicketDetail')
 const MyRoute = () => import('views/airticket/MyRoute')
 const TicketsByPage = () => import('views/airticket/TicketsByPage')
 const BuyTicket = () => import('components/content/ticket/BuyTicket')
+const OrderMain = () => import('views/ordermanage/OrderMain')
+const CreateOrder = () => import('views/ordermanage/CreateOrder')
 
 Vue.use(VueRouter)
 
@@ -91,6 +93,18 @@ const routes = [
     // 购买机票组件
     path: '/buyticket/:id',
     component: BuyTicket
+  },
+  {
+    // 请求订单根组件
+    path: '/ordermain',
+    component: OrderMain,
+    // 嵌套路由
+    children: [
+      {
+        path: 'createOrder',
+        component: CreateOrder
+      }
+    ]
   }
 ]
 

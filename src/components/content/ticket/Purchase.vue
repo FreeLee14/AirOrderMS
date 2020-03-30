@@ -32,6 +32,27 @@ export default {
     purchase (id) {
       // 在进行订票时会进行校验当前用户信息，如果没有登录则提示登录，如果完善信息则提示需要完善信息
       console.log(id)
+      const isLogin = localStorage.getItem('isLogin')
+      // 注意我们从localStorage中获取到的值都为字符串所以在进行对比时要注意写成字符串形式
+      console.log(isLogin)
+      if (isLogin === '1') {
+        this.$router.replace({
+          path: '/ordermain',
+          query: this.ticketInfo
+        })
+      } else {
+        this.$message({
+          message: '您尚未登录，请先登录',
+          type: 'warning'
+        })
+        // 跳转到登录组件
+        this.$router.replace({
+          path: '/login',
+          query: {
+            dialogFormVisible: true
+          }
+        })
+      }
     }
   }
 }
