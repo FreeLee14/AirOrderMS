@@ -2,11 +2,13 @@ package com.zrwang.airorderms.entity.dto;
 
 import lombok.Data;
 
+import java.io.Serializable;
+
 /**
  * 用于完善信息时前后端传递数据的实体
  */
 @Data
-public class PrefactUser {
+public class PrefactUser implements Serializable {
 
     /**
      *  用户真实姓名

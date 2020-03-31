@@ -2,10 +2,11 @@ package com.zrwang.airorderms.entity.vo;
 
 import lombok.Data;
 
+import java.io.Serializable;
 import java.util.Date;
 
 @Data
-public class TicketView {
+public class TicketView implements Serializable {
 
     private Integer id;
 

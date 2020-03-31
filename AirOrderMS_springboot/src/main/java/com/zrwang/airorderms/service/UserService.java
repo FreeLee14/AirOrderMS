@@ -2,8 +2,7 @@ package com.zrwang.airorderms.service;
 
 import com.zrwang.airorderms.entity.User;
 import com.baomidou.mybatisplus.extension.service.IService;
-
-import java.util.List;
+import com.zrwang.airorderms.entity.vo.LoginUser;
 
 /**
  * <p>
@@ -15,5 +14,6 @@ import java.util.List;
  */
 public interface UserService extends IService<User> {
 
-
+    // 登录方法接口
+     LoginUser loginUser(String name, String password, String token, String isLogin);
 }
