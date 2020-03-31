@@ -31,19 +31,19 @@
             <tr>
               <td>
                 <el-form-item label="订单联系人:">
-                  <el-input :disabled="true" v-model="order.orderPersonName" size="mini"></el-input>
+                  <el-input :disabled="true" v-model="orderPersonName" size="mini"></el-input>
                 </el-form-item>
               </td>
               <td>
                 <el-form-item label="联系人电话:">
-                  <el-input :disabled="true" v-model="order.orderPersonPhone" size="mini"></el-input>
+                  <el-input :disabled="true" v-model="orderPersonPhone" size="mini"></el-input>
                 </el-form-item>
               </td>
             </tr>
             <tr>
               <td>
                 <el-form-item label="联系人邮箱:">
-                  <el-input :disabled="true" v-model="order.orderPersonEmail"  size="mini"></el-input>
+                  <el-input :disabled="true" v-model="orderPersonEmail"  size="mini"></el-input>
                 </el-form-item>
               </td>
             </tr>
@@ -61,17 +61,24 @@
           <div class="destination">{{ticketInfo.destination}}</div>
           <div class="money"><font class="font">￥{{ticketInfo.money}}</font></div>
         </el-card>
+        <div class="btn">
+          <el-checkbox v-model="agree">已阅读购票须知</el-checkbox>
+          <el-button :disabled="!agree" type="warning" round @click="next">下一步</el-button>
+          <!-- <el-button type="success" @click="test">测试</el-button> -->
+        </div>
       </div>
     </el-form>
   </div>
 </template>
 
 <script>
+import qs from 'qs'
+import { createOrder } from 'network/order'
 export default {
   data () {
     return {
       order: {
-        userId: 0,
+        userId: localStorage.getItem('id'),
         ticketId: 0,
         money: 0,
         // 乘机人数，默认是一个，后期要进行拓展功能可添加多个乘客
@@ -80,12 +87,13 @@ export default {
         status: 1,
         passName: '',
         passPhone: '',
-        passIdcard: '',
-        orderPersonName: localStorage.getItem('name'),
-        orderPersonEmail: localStorage.getItem('email'),
-        orderPersonPhone: localStorage.getItem('phone')
+        passIdcard: ''
       },
-      ticketInfo: this.$route.query
+      orderPersonName: localStorage.getItem('name'),
+      orderPersonEmail: localStorage.getItem('email'),
+      orderPersonPhone: localStorage.getItem('phone'),
+      ticketInfo: this.$route.query,
+      agree: false
     }
   },
 
@@ -93,11 +101,43 @@ export default {
 
   mounted () {
     console.log(this.ticketInfo)
+    this.order.ticketId = this.ticketInfo.id
+    this.order.money = this.ticketInfo.money
   },
 
-  computed: {},
+  computed: {
+  },
 
-  methods: {}
+  methods: {
+    // test () {
+    //   this.$store.commit('changeActive')
+    // },
+    next () {
+      // 执行保存订单的异步请求
+      createOrder(
+        [
+          function (data) {
+            return qs.stringify(data)
+          }
+        ],
+        this.order
+      ).then(res => {
+        console.log(res)
+        if (res) {
+          this.$router.replace({
+            path: '/ordermain/ensureOrder'
+          })
+          this.$store.commit('changeActive')
+        }
+      }).catch(fail => {
+        console.log(fail)
+        this.$message({
+          message: '下单失败',
+          type: 'warning'
+        })
+      })
+    }
+  }
 }
 
 </script>
@@ -118,7 +158,7 @@ export default {
   width: 50%;
   height: 250px;
   position: relative;
-  left: 150px;
+  left: 70px;
   top: 50px;
 }
 .user{
@@ -126,7 +166,7 @@ export default {
   background-color: #F2F6FC;
   position: relative;
   top: 200px;
-  left: 150px;
+  left: 70px;
   height: 250px;
 }
 .ticket{
@@ -188,5 +228,11 @@ export default {
   font-size: 20px;
   float: left;
   font-weight: bold;
+}
+.btn{
+  width: 100px;
+  position: relative;
+  left: 300px;
+  top: 380px;
 }
 </style>

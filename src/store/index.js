@@ -16,7 +16,9 @@ const store = new Vuex.Store({
     // 邮箱
     email: '',
     // 电话
-    phone: ''
+    phone: '',
+    // 创建订单流程中的步数管理
+    active: 1
   },
   // 公共的计算属性
   getters: {
@@ -52,6 +54,9 @@ const store = new Vuex.Store({
       localStorage.removeItem('id')
       localStorage.removeItem('email')
       localStorage.removeItem('phone')
+    },
+    changeActive (state) {
+      state.active += 1
     }
   },
   // 异步方法

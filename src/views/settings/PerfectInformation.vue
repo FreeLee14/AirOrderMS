@@ -193,8 +193,9 @@ export default {
     },
     // 初始化个人信息显示的函数
     initInfo () {
-      if (this.$store.state.name !== '') {
-        findByName(this.$store.state.name)
+      const name = localStorage.getItem('name')
+      if (name !== '') {
+        findByName(name)
           .then(res => {
             setTimeout(() => {
               console.log(res)

@@ -16,6 +16,7 @@ const TicketsByPage = () => import('views/airticket/TicketsByPage')
 const BuyTicket = () => import('components/content/ticket/BuyTicket')
 const OrderMain = () => import('views/ordermanage/OrderMain')
 const CreateOrder = () => import('views/ordermanage/CreateOrder')
+const EnsureOrder = () => import('views/ordermanage/EnsureOrder')
 
 Vue.use(VueRouter)
 
@@ -103,6 +104,10 @@ const routes = [
       {
         path: 'createOrder',
         component: CreateOrder
+      },
+      {
+        path: 'ensureOrder',
+        component: EnsureOrder
       }
     ]
   }
