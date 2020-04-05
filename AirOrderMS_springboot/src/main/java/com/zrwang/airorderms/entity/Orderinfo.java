@@ -1,7 +1,7 @@
 package com.zrwang.airorderms.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
-import java.util.Date;
+import java.sql.Date;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 import lombok.Data;
@@ -32,13 +32,19 @@ public class Orderinfo implements Serializable {
 
     private Integer number;
 
-    private Date purchasetime;
+    private String purchasetime;
 
-    private Date invalidtime;
+    private String invalidtime;
 
     private Integer money;
 
     private Integer status;
+
+    private String passName;
+
+    private String passPhone;
+
+    private String passIdcard;
 
 
 }

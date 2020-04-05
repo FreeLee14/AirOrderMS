@@ -1,28 +1,18 @@
 package com.zrwang.airorderms.controller;
 
 
-
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.segments.MergeSegments;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.zrwang.airorderms.entity.RegistUser;
 import com.zrwang.airorderms.entity.User;
+import com.zrwang.airorderms.entity.vo.LoginUser;
 import com.zrwang.airorderms.entity.dto.PrefactUser;
-import com.zrwang.airorderms.mapper.UserMapper;
 import com.zrwang.airorderms.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.File;
-import java.sql.Date;
-import java.util.UUID;
-import java.util.concurrent.TimeUnit;
 
 /**
  * <p>
@@ -39,8 +29,7 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-    @Autowired
-    private UserMapper userMapper;
+
     @Autowired
     StringRedisTemplate stringRedisTemplate;
 
@@ -91,39 +80,14 @@ public class UserController {
 
     // 登录方法
     @GetMapping("/user")
-    public String loginUser ( String name, String password, String token, String isLogin)
+    public LoginUser loginUser (String name, String password, String token, String isLogin)
     {
 
-        Logger logger = LoggerFactory.getLogger(UserController.class);
-        // 判断如果令牌为null或者是空就随机生成一个令牌
-        if(token==null || token.isEmpty()){
+        LoginUser loginUser = userService.loginUser(name, password, token, isLogin);
 
-            QueryWrapper<User> wrapper = new QueryWrapper();
-            wrapper.eq("name",name);
-            wrapper.select("password");
-            User user = userMapper.selectOne(wrapper);
-            // 获取查询到的密码
-            String findPass = user.getPassword();
-
-            if (password.contentEquals(findPass)){
-
-                logger.info("密码校验成功");
-                logger.info("开始生成令牌");
-
-                token = UUID.randomUUID().toString();
-                stringRedisTemplate.opsForValue().set(name,token);
-                // 指定过期时间为20s进行测试
-                stringRedisTemplate.expire(name,3600, TimeUnit.SECONDS);
-
-                String keyName = stringRedisTemplate.opsForValue().get(name);
-                System.out.println(keyName);
-
-            }
-
-        }
-
-        return token;
+        return loginUser;
     }
+
     // 注销方法 主要是将redis中的缓存令牌进行清除
     @DeleteMapping("/user")
     public boolean logoutUser(String name){
