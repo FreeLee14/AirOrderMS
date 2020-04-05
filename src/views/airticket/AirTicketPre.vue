@@ -5,8 +5,8 @@
       <ScrollBarItem></ScrollBarItem>
     </ScrollBarMain>
     <AirTicketPreItem>
-      <Search slot="search"></Search>
-      <MainNominate slot="nominate"></MainNominate>
+      <Search slot="search" @transflag="transflag"></Search>
+      <MainNominate slot="nominate" v-if="flag"></MainNominate>
     </AirTicketPreItem>
   </div>
 </template>
@@ -24,6 +24,7 @@ import MainNominate from 'components/content/mainbar/MainNominate'
 export default {
   data () {
     return {
+      flag: true
     }
   },
 
@@ -37,9 +38,14 @@ export default {
 
   computed: {},
 
-  methods: {}
+  methods: {
+    // 获取精准搜索组件的flag用于控制推荐组件的显示和查询出详细机票显示之间的切换
+    transflag (data) {
+      this.flag = !data
+    }
+  }
 }
 
 </script>
-<style lang='scss' scoped>
+<style  scoped>
 </style>

@@ -1,7 +1,20 @@
 <!-- 机票购买组件 -->
 <template>
   <div>
-    <div class="bottom">
+    <div v-if="typeof ticketsInfo !== 'undefined' " class="tickets" >
+      <div v-for="(item,index) in ticketsInfo" :key="index" >
+        <div class="name"><i class="el-icon-s-promotion">菲航航空&nbsp;{{item.flight}}</i></div>
+        <div class="starttime"><font class="font">{{item.startTime}}</font></div>
+        <div class="consume">{{item.consume}}</div>
+        <div class="endtime"><font class="font">{{item.endTime}}</font></div>
+        <div class="departure">{{item.departure}}</div>
+        <div class="destination">{{item.destination}}</div>
+        <div class="money"><font class="font">￥{{item.money}}</font></div>
+        <div class="btn"><el-button type="warning" @click="purchase(item.id)" round>订票</el-button></div>
+      </div>
+    </div>
+    <!-- 当父子组件通信的数据没有传递过来时就不显示这个模块 -->
+    <div v-if="typeof ticketInfo !== 'undefined'" class="bottom">
         <div class="name"><i class="el-icon-s-promotion">菲航航空&nbsp;{{ticketInfo.flight}}</i></div>
         <div class="starttime"><font class="font">{{ticketInfo.startTime}}</font></div>
         <div class="consume">{{ticketInfo.consume}}</div>
@@ -17,7 +30,7 @@
 <script>
 
 export default {
-  props: ['ticketView'],
+  props: ['ticketView', 'ticketsView'],
   data () {
     return {
       ticketInfo: this.ticketView
@@ -26,7 +39,19 @@ export default {
 
   components: {},
 
-  computed: {},
+  computed: {
+    // ticketsView根据搜索组件筛选出的机票信息传递到当前购买组件,在此我们需要在计算属性中定义，因为我们会随时修改检索条件，所以需要响应式的改变机票信息
+    ticketsInfo () {
+      return this.ticketsView
+    }
+  },
+
+  mounted () {
+    this.$nextTick(function () {
+      console.log(this.ticketInfo)
+      console.log(this.ticketsInfo)
+    })
+  },
 
   methods: {
     purchase (id) {
@@ -121,5 +146,12 @@ export default {
   float: left;
   font-weight: bold;
 }
-
+.tickets{
+  background-color: #EBEEF5;
+  position: relative;
+  top: 50px;
+  left: 103px;
+  width: 1340px;
+  height: 250px;
+}
 </style>

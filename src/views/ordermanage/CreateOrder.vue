@@ -74,6 +74,9 @@
 <script>
 import qs from 'qs'
 import { createOrder } from 'network/order'
+// 定义订单编号（根据当前时间戳进行生成）
+var time = new Date()
+
 export default {
   data () {
     return {
@@ -87,7 +90,9 @@ export default {
         status: 1,
         passName: '',
         passPhone: '',
-        passIdcard: ''
+        passIdcard: '',
+        // 根据当前日期生成订单号
+        orderId: 'Air' + '' + time.getFullYear() + '' + time.getMonth() + 1 + '' + time.getDay()
       },
       orderPersonName: localStorage.getItem('name'),
       orderPersonEmail: localStorage.getItem('email'),
@@ -111,6 +116,10 @@ export default {
   methods: {
     // test () {
     //   this.$store.commit('changeActive')
+    //   this.$router.replace({
+    //     path: '/ordermain/ensureOrder'
+    //     // query: this.order
+    //   })
     // },
     next () {
       // 执行保存订单的异步请求
@@ -124,8 +133,18 @@ export default {
       ).then(res => {
         console.log(res)
         if (res) {
+          console.log(this.order)
           this.$router.replace({
-            path: '/ordermain/ensureOrder'
+            path: '/ordermain/ensureOrder',
+            query: {
+              order: this.order,
+              ticketInfo: this.ticketInfo,
+              orderPerson: {
+                orderPersonName: this.orderPersonName,
+                orderPersonEmail: this.orderPersonEmail,
+                orderPersonPhone: this.orderPersonPhone
+              }
+            }
           })
           this.$store.commit('changeActive')
         }

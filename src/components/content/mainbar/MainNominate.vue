@@ -1,7 +1,6 @@
 <!-- 默认主页MainItem.Vue显示的推荐机票信息的子组件 -->
 <template>
   <div v-loading="loading" class="main-nominate">
-    <h1>我是推荐部分</h1>
     <div v-for="(item, index) in nominateinfos " :key="index" class="item-nominate">
       <span class="departure">{{item.departure}} <i class="el-icon-s-promotion"></i></span>
       <span class="destination">{{item.destination}}</span>

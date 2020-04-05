@@ -2,12 +2,12 @@
 <template>
   <div class="order">
     <el-table
-      :data="order"
+      :data="allOrders"
       border
-      style="width: 100%">
+      style="width: 95%">
       <el-table-column
-        prop="flight"
-        label="航班"
+        prop="orderId"
+        label="订单号"
         width="150">
       </el-table-column>
       <el-table-column
@@ -16,19 +16,19 @@
         width="150">
       </el-table-column>
       <el-table-column
-        prop="departure"
-        label="出发地"
+        prop="money"
+        label="金额"
         width="150">
       </el-table-column>
       <el-table-column
-        prop="destination"
-        label="目的地"
-        width="150">
+        prop="purchasetime"
+        label="下单时间"
+        width="200">
       </el-table-column>
       <el-table-column
-        prop="date"
-        label="日期"
-        width="300">
+        prop="invalidtime"
+        label="出发时间"
+        width="200">
       </el-table-column>
       <el-table-column
         label="操作"
@@ -43,33 +43,46 @@
 </template>
 
 <script>
+import { deleteOrder } from 'network/order'
 export default {
+  // 从父组件获取到的数据
+  props: ['attribute'],
   data () {
     return {
-      order: [
-        {
-          flight: 'z901',
-          seat: 'a02',
-          departure: '石家庄',
-          destination: '北京',
-          date: '2020-02-03'
-        }
-      ]
+
     }
   },
 
   components: {},
 
-  computed: {},
+  computed: {
+    // 父子组件传递过来的值需要使用计算属性进行回显到子组件，才能实现响应式的显示
+    allOrders () {
+      return this.attribute
+    }
+  },
 
   methods: {
     // 查询方法
     search (row) {
       console.log(row)
+      // console.log(row.ticketId)
     },
     // 退订方法
     unsubscribe (row) {
-      console.log(row)
+      console.log(row.ticketId)
+      deleteOrder({
+        userId: localStorage.getItem('id'),
+        orderId: row.orderId
+      }).then(res => {
+        if (res) {
+          this.$message({
+            message: '退订成功',
+            type: 'success'
+          })
+          window.reload()
+        }
+      })
     }
   }
 }
