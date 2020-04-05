@@ -31,7 +31,7 @@ public class UserController {
     private UserService userService;
 
     @Autowired
-    StringRedisTemplate stringRedisTemplate;
+    private StringRedisTemplate stringRedisTemplate;
 
 //    @GetMapping("/user")
 //    public List<User> findAllUser(){
