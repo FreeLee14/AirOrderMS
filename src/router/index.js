@@ -17,7 +17,10 @@ const BuyTicket = () => import('components/content/ticket/BuyTicket')
 const OrderMain = () => import('views/ordermanage/OrderMain')
 const CreateOrder = () => import('views/ordermanage/CreateOrder')
 const EnsureOrder = () => import('views/ordermanage/EnsureOrder')
-
+const PaySuccess = () => import('views/ordermanage/PaySuccess')
+// src\components\content\search\Search.vue
+const Purchase = () => import('components/content/ticket/Purchase')
+const Search = () => import('components/content/search/Search')
 Vue.use(VueRouter)
 
 // 定义路由映射关系
@@ -108,6 +111,20 @@ const routes = [
       {
         path: 'ensureOrder',
         component: EnsureOrder
+      },
+      {
+        path: 'paySuccess',
+        component: PaySuccess
+      }
+    ]
+  },
+  {
+    path: '/search',
+    component: Search,
+    children: [
+      {
+        path: '/purchase',
+        component: Purchase
       }
     ]
   }

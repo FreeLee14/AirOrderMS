@@ -15,3 +15,14 @@ export function findById (id) {
     url: '/airorderms/ticket/' + id
   })
 }
+// 封装进行精准查询的异步请求
+export function findByConditions (trans, data) {
+  return request({
+    url: '/airorderms/ticket',
+    method: 'post',
+    // 针对后端接受表单数据的类型，修改请求头中传递数据的类型
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    transformRequest: trans,
+    data: data
+  })
+}

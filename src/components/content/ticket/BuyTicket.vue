@@ -1,12 +1,12 @@
 <!-- 公共购买机票组件 -->
-<template>
+<template >
   <div>
-    <BuyTicketItem>
+    <BuyTicketItem >
       <div class="search" slot="search">
-        <Search v-bind:ticketView="ticketView"></Search>
+        <Search v-bind:ticketView="ticketView"  ></Search>
       </div>
       <div class="purchase" slot="purchase">
-        <Purchase v-bind:ticketView="ticketView"></Purchase>
+        <Purchase v-bind:ticketView="ticketView" ></Purchase>
       </div>
     </BuyTicketItem>
   </div>
