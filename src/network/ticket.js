@@ -26,3 +26,9 @@ export function findByConditions (trans, data) {
     data: data
   })
 }
+// 封装分页查询所有机票信息的异步请求
+export function showAllByPage (currentPage, pageCounts) {
+  return request({
+    url: '/airorderms/ticket/' + currentPage + '/' + pageCounts
+  })
+}

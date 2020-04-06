@@ -29,11 +29,14 @@ export default {
 
   mounted () {
     this.$nextTick(function () {
-      findAllOrder(localStorage.getItem('id'))
-        .then(res => {
-          this.orders = res
-          console.log(this.orders)
-        })
+      // 先判断当前缓存中是否有用户id存在
+      if (localStorage.getItem('id') !== null) {
+        findAllOrder(localStorage.getItem('id'))
+          .then(res => {
+            this.orders = res
+            console.log(this.orders)
+          })
+      }
     })
   },
 
