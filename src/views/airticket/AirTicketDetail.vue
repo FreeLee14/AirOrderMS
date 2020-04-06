@@ -2,12 +2,11 @@
 <template>
   <div>
     <AirTicketDetailItem>
-      <div slot="search" class="search">
-        <Search></Search>
+      <div slot="search"  class="search">
+        <Search @transflag="transflag"></Search>
       </div>
       <div slot="tickets" class="tickets">
-        <h1>分页查询显示所有的数据</h1>
-        <TicketsByPage ></TicketsByPage>
+        <TicketsByPage v-if="flag" ></TicketsByPage>
       </div>
     </AirTicketDetailItem>
   </div>
@@ -23,6 +22,7 @@ import TicketsByPage from 'views/airticket/TicketsByPage'
 export default {
   data () {
     return {
+      flag: true
     }
   },
 
@@ -34,7 +34,12 @@ export default {
 
   computed: {},
 
-  methods: {}
+  methods: {
+    transflag (data) {
+      this.flag = !data
+      console.log(this.flag)
+    }
+  }
 }
 
 </script>
