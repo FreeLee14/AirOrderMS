@@ -1,9 +1,9 @@
 package com.zrwang.airorderms.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.zrwang.airorderms.entity.Orderinfo;
 import com.zrwang.airorderms.entity.Ticket;
-import com.zrwang.airorderms.entity.dto.CreateOrderInfo;
 import com.zrwang.airorderms.mapper.OrderinfoMapper;
 import com.zrwang.airorderms.mapper.TicketMapper;
 import com.zrwang.airorderms.service.OrderinfoService;
@@ -14,8 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.sql.Date;
-import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 /**
  * <p>
@@ -29,9 +29,9 @@ import java.text.SimpleDateFormat;
 public class OrderinfoServiceImpl extends ServiceImpl<OrderinfoMapper, Orderinfo> implements OrderinfoService {
 
     @Autowired
-    OrderinfoMapper orderinfoMapper;
+    private OrderinfoMapper orderinfoMapper;
     @Autowired
-    TicketMapper ticketMapper;
+    private TicketMapper ticketMapper;
 
     private Logger logger;
 
@@ -63,15 +63,8 @@ public class OrderinfoServiceImpl extends ServiceImpl<OrderinfoMapper, Orderinfo
 
         Ticket ticket = ticketMapper.selectOne(ticketWrapper);
         logger.info("查询结束");
-        // 判断获取的机票起飞时间是否为空，如果为空那么就不进行转型
-        if (ticket.getStartTime() != null){
 
-            Timestamp invalidTimestamp = ticket.getStartTime();
-            // 将获取到的时间戳转型为date格式，并转换为我们定义的对应格式字符串
-            invalidTime = simpleDateFormat.format(new Date(invalidTimestamp.getTime()));
-
-        }
-
+        invalidTime = ticket.getStartTime();
         String purchaseTime = simpleDateFormat.format(purDate);
         //  封装我们最后要持久化的订单信息
         orderinfo.setInvalidtime(invalidTime);
@@ -89,4 +82,124 @@ public class OrderinfoServiceImpl extends ServiceImpl<OrderinfoMapper, Orderinfo
 
         return flag;
     }
+    // 确认订单方法（已经支付成功）
+    @Override
+    public boolean ensureOrder(String orderId,Integer status,Integer ticketId) {
+
+        boolean flag = false;
+        logger = LoggerFactory.getLogger(OrderinfoServiceImpl.class);
+
+        logger.info("查询机票余票");
+        String seat = updateOrder(ticketId, status);
+        // 判断如果没有机票直接返回false
+        if (seat == null)
+            return flag;
+
+        logger.info("开始更新订单");
+
+        UpdateWrapper<Orderinfo> updateWrapper = new UpdateWrapper<>();
+
+        updateWrapper.set("status",status);
+        updateWrapper.set("seat",seat);
+        updateWrapper.eq("order_id",orderId);
+
+        int update = orderinfoMapper.update(null, updateWrapper);
+
+        if (update > 0)
+            flag = true;
+
+        if (status == 2 && flag == true)
+            logger.info("确认订单成功");
+        if (status == 3 && flag == true)
+            logger.info("下单成功");
+
+        return flag;
+    }
+
+    /**
+     * 确认订单时需要随机出票，需要查询出具体机票的座位信息,同时删除这张机票的信息
+     * @param ticketId
+     * @param staus
+     * @return
+     */
+    @Override
+    public String updateOrder(Integer ticketId, Integer staus) {
+
+        logger = LoggerFactory.getLogger(OrderinfoServiceImpl.class);
+        logger.info("开始查询具体的余票信息，并随机返回一张座位机票");
+        QueryWrapper<Ticket> ticketQueryWrapper = new QueryWrapper<>();
+
+        ticketQueryWrapper.select("seat");
+        // 后面跟上last方法可补充我们想要的结尾sql，在这里分页查询只显示一条机票信息
+        ticketQueryWrapper.eq("parentid",ticketId).last("limit 1");
+        logger.info("进行随机出票");
+        Ticket ticket = ticketMapper.selectOne(ticketQueryWrapper);
+//        logger.info("删除这张机票");
+//        ticketMapper.delete(ticketQueryWrapper);
+        if (ticket == null)
+            return null;
+        else
+            return ticket.getSeat();
+    }
+
+    /**
+     * 根据用户id查询所有订单
+     * @param userId
+     * @return
+     */
+    @Override
+    public List<Orderinfo> findAllOrder(Integer userId) {
+
+        List<Orderinfo> orderinfoList;
+        logger = LoggerFactory.getLogger(OrderinfoServiceImpl.class);
+        QueryWrapper<Orderinfo> orderinfoQueryWrapper = new QueryWrapper<>();
+
+        logger.info("开始查询所有已完成订单");
+        orderinfoQueryWrapper.eq("user_id",userId);
+        orderinfoQueryWrapper.eq("status",2);
+
+        orderinfoList = orderinfoMapper.selectList(orderinfoQueryWrapper);
+        logger.info("查询结束并已缓存");
+
+        return orderinfoList;
+    }
+
+    /**
+     * 将查出来要退订的机票进行更新状态为已退订，同时进行恢复这张机票的状态
+     * @param userId
+     * @param orderId
+     * @return
+     */
+    @Override
+    public boolean deleteOrder(String orderId, Integer userId) {
+
+        logger = LoggerFactory.getLogger(OrderinfoServiceImpl.class);
+
+        QueryWrapper<Orderinfo> queryWrapper = new QueryWrapper<>();
+
+        queryWrapper.eq("user_id",userId);
+        queryWrapper.eq("order_id",orderId);
+        // 查询出来我们要退订的机票后
+        logger.info("开始查询要退订的订单");
+        Orderinfo orderinfo = orderinfoMapper.selectOne(queryWrapper);
+        //开始校验机票时间是否已经超过了当前时间（稍后进行补充，同时前端部分也要进行时间的校验进行拦截）
+        logger.info("进行订单失效时间的判断");
+        // 进行订单状态的改变
+        logger.info("开始进行订单状态的改变，更新为已退定");
+        UpdateWrapper<Orderinfo> updateWrapper = new UpdateWrapper<>();
+        // 更新已经退订的订单状态为3
+        updateWrapper.set("status",3);
+
+        int update = orderinfoMapper.update(null, updateWrapper);
+
+        if (update > 0){
+
+            return true;
+
+        }
+
+        return false;
+    }
+
+
 }

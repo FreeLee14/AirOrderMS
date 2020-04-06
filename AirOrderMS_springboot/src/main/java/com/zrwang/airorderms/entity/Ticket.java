@@ -56,7 +56,7 @@ public class Ticket implements Serializable {
     /**
      * 起飞时间
      */
-    private Timestamp startTime;
+    private String startTime;
 
     /**
      * 行程时间
@@ -81,6 +81,6 @@ public class Ticket implements Serializable {
     /**
      * 结束日期
      */
-    private Timestamp endTime;
+    private String endTime;
 
 }

@@ -46,5 +46,9 @@ public class Orderinfo implements Serializable {
 
     private String passIdcard;
 
+    private String orderId;
+
+    private String seat;
+
 
 }

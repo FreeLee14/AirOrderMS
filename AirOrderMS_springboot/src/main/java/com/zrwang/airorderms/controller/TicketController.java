@@ -3,6 +3,7 @@ package com.zrwang.airorderms.controller;
 
 import com.zrwang.airorderms.entity.Ticket;
 import com.zrwang.airorderms.entity.dto.NominateTicket;
+import com.zrwang.airorderms.entity.dto.TicketConditions;
 import com.zrwang.airorderms.entity.vo.TicketView;
 import com.zrwang.airorderms.service.impl.TicketServiceImpl;
 import org.slf4j.Logger;
@@ -40,7 +41,7 @@ public class TicketController {
         logger.info("查询结束并已缓存");
         return random;
     }
-
+    // 后期需要针对这个方法进行改造，性能太差
     @GetMapping("/ticket/{id}")
     @Cacheable(cacheNames = "TicketById" , key = "#id",cacheManager = "redisCacheManager")
     public List<TicketView> findById(@PathVariable(value = "id") Integer id) throws ParseException {
@@ -48,14 +49,13 @@ public class TicketController {
         logger.info("开始根据id查询票据信息");
         Ticket ticket = ticketService.getById(id);
 
-        String startDateStr = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(ticket.getStartTime());
-        //获取开始日期
+        String startDateStr = ticket.getStartTime();
+        //获取开始日期（同时在这个业务中代表着结束日期）
         String startDate = startDateStr.substring(0, 10);
         // 获取开始时间
         String startTime = startDateStr.substring(11,16);
-        //获取结束时间
-        String endTime = new SimpleDateFormat("hh:mm:ss").format(ticket.getEndTime()).substring(0,5);
-
+        // 获取结束时间
+        String endTime = ticket.getEndTime().substring(11,16);
         TicketView ticketView = new TicketView();
 
         ticketView.setId(ticket.getId());
@@ -75,6 +75,15 @@ public class TicketController {
         ticketViews.add(ticketView);
 
         return ticketViews;
+    }
+
+    @PostMapping("/ticket")
+    public  List<Ticket> findByConditions(TicketConditions conditions){
+
+        List<Ticket> ticketViews = ticketService.findByConditions(conditions);
+
+        return ticketViews;
+
     }
 
 }
