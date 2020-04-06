@@ -1,13 +1,13 @@
 package com.zrwang.airorderms.service;
 
-import com.zrwang.airorderms.entity.Orderinfo;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.zrwang.airorderms.entity.Ticket;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.zrwang.airorderms.entity.dto.NominateTicket;
+import com.zrwang.airorderms.entity.vo.NominateTicket;
 import com.zrwang.airorderms.entity.dto.TicketConditions;
-import com.zrwang.airorderms.entity.vo.TicketView;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -32,4 +32,12 @@ public interface TicketService extends IService<Ticket> {
      * @return
      */
     List<Ticket> findByConditions(TicketConditions conditions);
+
+    /**
+     * 实现分页查询所有的机票信息
+     * @param currentPage
+     * @param pageCounts
+     * @return
+     */
+    Map<String,Object> showAllByPage(Integer currentPage, Integer pageCounts);
 }

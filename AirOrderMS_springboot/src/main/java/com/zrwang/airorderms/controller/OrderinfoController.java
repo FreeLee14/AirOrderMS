@@ -88,7 +88,7 @@ public class OrderinfoController {
      * @param orderId
      * @return
      */
-    @CacheEvict(allEntries = false,beforeInvocation = true, cacheNames = "orders",key = "#userId")
+    @CacheEvict(cacheManager = "redisCacheManager", allEntries = false,beforeInvocation = true, cacheNames = "orders",key = "#userId")
     @DeleteMapping("orderinfo")
     public List<Orderinfo> deleteOrder(String orderId, Integer userId){
 

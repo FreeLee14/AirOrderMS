@@ -1,8 +1,10 @@
 package com.zrwang.airorderms.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zrwang.airorderms.entity.Ticket;
-import com.zrwang.airorderms.entity.dto.NominateTicket;
+import com.zrwang.airorderms.entity.vo.NominateTicket;
 import com.zrwang.airorderms.entity.dto.TicketConditions;
 import com.zrwang.airorderms.mapper.TicketMapper;
 import com.zrwang.airorderms.service.TicketService;
@@ -14,7 +16,9 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -103,6 +107,36 @@ public class TicketServiceImpl extends ServiceImpl<TicketMapper, Ticket> impleme
         }
 
         return tickets;
+    }
+
+    /**
+     * 实现分页查询所有机票信息
+     * @param currentPage
+     * @param pageCounts
+     * @return
+     */
+    @Override
+    public Map<String,Object> showAllByPage(Integer currentPage, Integer pageCounts) {
+
+        logger = LoggerFactory.getLogger(TicketServiceImpl.class);
+        Map<String,Object> result = new HashMap<>();
+
+        QueryWrapper<Ticket> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("parentid",0).last("ORDER BY id");
+
+
+        Page<Ticket> page = new Page<>(currentPage,pageCounts);
+        logger.info("开始分页查询");
+
+        IPage<Ticket> ticketIPage = ticketMapper.selectPage(page,queryWrapper);
+
+        logger.info("查询结束，开始组装结果集");
+        // 需要把分页查询出来的机票信息和总记录数存入到map中，方便结合redis缓存
+        result.put("records",ticketIPage.getRecords());
+        result.put("total",ticketIPage.getTotal());
+
+        return result;
+
     }
 
 }

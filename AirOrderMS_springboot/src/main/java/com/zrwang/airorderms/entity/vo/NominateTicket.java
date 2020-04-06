@@ -1,4 +1,4 @@
-package com.zrwang.airorderms.entity.dto;
+package com.zrwang.airorderms.entity.vo;
 
 import lombok.Data;
 

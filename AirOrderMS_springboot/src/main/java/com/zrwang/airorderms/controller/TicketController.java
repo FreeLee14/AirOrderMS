@@ -1,8 +1,9 @@
 package com.zrwang.airorderms.controller;
 
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.zrwang.airorderms.entity.Ticket;
-import com.zrwang.airorderms.entity.dto.NominateTicket;
+import com.zrwang.airorderms.entity.vo.NominateTicket;
 import com.zrwang.airorderms.entity.dto.TicketConditions;
 import com.zrwang.airorderms.entity.vo.TicketView;
 import com.zrwang.airorderms.service.impl.TicketServiceImpl;
@@ -13,7 +14,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -59,7 +59,7 @@ public class TicketController {
         TicketView ticketView = new TicketView();
 
         ticketView.setId(ticket.getId());
-        ticketView.setConsume(ticket.getConsume());
+        ticketView.setConsume(ticket.getConsume().substring(0,5));
         ticketView.setCounts(ticket.getCounts());
         ticketView.setDeparture(ticket.getDeparture());
         ticketView.setDestination(ticket.getDestination());
@@ -83,6 +83,16 @@ public class TicketController {
         List<Ticket> ticketViews = ticketService.findByConditions(conditions);
 
         return ticketViews;
+
+    }
+    @Cacheable( cacheManager = "redisCacheManager",cacheNames = "pageInfo", key = "#currentPage",unless = "#result == null ")
+    @GetMapping("/ticket/{currentPage}/{pageCounts}")
+    public Map<String,Object> showAllByPage(@PathVariable(value = "currentPage") Integer currentPage,
+                                      @PathVariable(value = "pageCounts") Integer pageCounts) {
+
+        Map<String,Object> allTickets = ticketService.showAllByPage(currentPage,pageCounts);
+
+        return allTickets;
 
     }
 
