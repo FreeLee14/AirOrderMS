@@ -2,6 +2,8 @@ package com.zrwang.airorderms.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import java.sql.Date;
+
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import java.io.Serializable;
 import lombok.Data;
@@ -25,9 +27,11 @@ public class Orderinfo implements Serializable {
 
     @TableId(value = "id", type = IdType.AUTO)
     private Integer id;
-
+    // 定义外键
+    @TableField("user_id")
     private Integer userId;
-
+    // 定义外键
+    @TableField("ticket_id")
     private Integer ticketId;
 
     private Integer number;

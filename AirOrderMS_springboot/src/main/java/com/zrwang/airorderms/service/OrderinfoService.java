@@ -2,6 +2,7 @@ package com.zrwang.airorderms.service;
 
 import com.zrwang.airorderms.entity.Orderinfo;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.zrwang.airorderms.entity.Ticket;
 import com.zrwang.airorderms.entity.dto.CreateOrderInfo;
 
 import java.util.List;
@@ -35,7 +36,7 @@ public interface OrderinfoService extends IService<Orderinfo> {
       * @param staus
       * @return
       */
-     String updateOrder(Integer ticketId, Integer staus);
+     Ticket updateOrder(Integer ticketId, Integer staus);
 
      /**
       * 查询所有订单方法
@@ -51,4 +52,11 @@ public interface OrderinfoService extends IService<Orderinfo> {
       * @return
       */
      boolean deleteOrder(String orderId, Integer userId);
+
+     /**
+      * 根据用户id查询所有已完成订单的行程信息
+      * @param userId
+      * @return
+      */
+     List<Ticket> findMyRoute(Integer userId);
 }

@@ -1,18 +1,19 @@
 package com.zrwang.airorderms.controller;
 
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.zrwang.airorderms.entity.RegistUser;
 import com.zrwang.airorderms.entity.User;
 import com.zrwang.airorderms.entity.vo.LoginUser;
 import com.zrwang.airorderms.entity.dto.PrefactUser;
+import com.zrwang.airorderms.service.OrderinfoService;
 import com.zrwang.airorderms.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * <p>
@@ -31,15 +32,8 @@ public class UserController {
     private UserService userService;
 
     @Autowired
-    private StringRedisTemplate stringRedisTemplate;
+    private OrderinfoService orderinfoService;
 
-//    @GetMapping("/user")
-//    public List<User> findAllUser(){
-//
-//        List<User> users = userService.list(null);
-//
-//        return users;
-//    }
 
 
     // 注册方法
@@ -92,19 +86,7 @@ public class UserController {
     @DeleteMapping("/user")
     public boolean logoutUser(String name){
 
-        Logger logger = LoggerFactory.getLogger(UserController.class);
-        // 删除redis中存储的token
-        Boolean delete = stringRedisTemplate.delete(name);
-
-        if (delete == true){
-
-            logger.info("注销成功");
-
-        }else{
-
-            logger.info("注销失败");
-
-        }
+        boolean delete = userService.logoutUser(name);
 
         return delete;
 
@@ -142,10 +124,7 @@ public class UserController {
     @GetMapping("/user/{name}")
     public User findByName (@PathVariable(value = "name") String name){
 
-        QueryWrapper<User> userWrapper = new QueryWrapper<>();
-
-        userWrapper.eq("name",name);
-        User user = userService.getOne(userWrapper);
+        User user = userService.findByName(name);
 
         return user;
 

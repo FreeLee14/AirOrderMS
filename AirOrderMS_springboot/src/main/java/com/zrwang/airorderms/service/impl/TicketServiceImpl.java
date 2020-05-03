@@ -1,6 +1,7 @@
 package com.zrwang.airorderms.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zrwang.airorderms.entity.Ticket;
@@ -19,6 +20,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * <p>
@@ -36,7 +38,7 @@ public class TicketServiceImpl extends ServiceImpl<TicketMapper, Ticket> impleme
     @Autowired
     private TicketMapper ticketMapper;
 
-    private Logger logger;
+    private Logger logger = LoggerFactory.getLogger(TicketServiceImpl.class);
 
 
     @Override
@@ -136,6 +138,30 @@ public class TicketServiceImpl extends ServiceImpl<TicketMapper, Ticket> impleme
         result.put("total",ticketIPage.getTotal());
 
         return result;
+
+    }
+
+    /**
+     * 更新机票状态
+     * @param id
+     */
+    @Override
+    public void updateTicket(AtomicReference<Integer> id,Integer status) {
+
+        if (status == 1)
+            logger.info("开始更新机票状态为已购买");
+        else if (status == 0)
+            logger.info("由于退票，开始更新机票状态为可被购买");
+
+        UpdateWrapper<Ticket> updateWrapper = new UpdateWrapper<>();
+        updateWrapper.set("ticket_status",status);
+        // 转换为整型，id经过原子类传递过来的是一个double类型
+        Integer ticketId = id.get();
+        updateWrapper.eq("id",ticketId);
+        int update = ticketMapper.update(null, updateWrapper);
+
+        if (update > 0)
+            logger.info("更新状态成功");
 
     }
 

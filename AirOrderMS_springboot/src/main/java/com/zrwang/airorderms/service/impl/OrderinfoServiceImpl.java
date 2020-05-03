@@ -8,6 +8,7 @@ import com.zrwang.airorderms.mapper.OrderinfoMapper;
 import com.zrwang.airorderms.mapper.TicketMapper;
 import com.zrwang.airorderms.service.OrderinfoService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zrwang.airorderms.service.TicketService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,10 @@ import org.springframework.stereotype.Service;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * <p>
@@ -32,8 +36,11 @@ public class OrderinfoServiceImpl extends ServiceImpl<OrderinfoMapper, Orderinfo
     private OrderinfoMapper orderinfoMapper;
     @Autowired
     private TicketMapper ticketMapper;
+    @Autowired
+    private TicketService ticketService;
 
-    private Logger logger;
+
+    private Logger logger = LoggerFactory.getLogger(OrderinfoServiceImpl.class);
 
     @Override
     /**
@@ -42,8 +49,6 @@ public class OrderinfoServiceImpl extends ServiceImpl<OrderinfoMapper, Orderinfo
      * type: boolean
      */
     public boolean createOrder(Orderinfo orderinfo) {
-
-        logger = LoggerFactory.getLogger(OrderinfoServiceImpl.class);
 
         boolean flag = false;
         String invalidTime = "";
@@ -57,7 +62,7 @@ public class OrderinfoServiceImpl extends ServiceImpl<OrderinfoMapper, Orderinfo
         // 根据机票Id查询出要起飞的时间，当作是订单的失效时间
         int ticketId = orderinfo.getTicketId();
         // 封装查询机票的查询类，我们只需要查询处起飞时间即可（目的是节省数据库开销）
-        QueryWrapper<Ticket> ticketWrapper = new QueryWrapper();
+        QueryWrapper<Ticket> ticketWrapper = new QueryWrapper<>();
         ticketWrapper.select("start_time");
         ticketWrapper.eq("id", ticketId);
 
@@ -82,25 +87,27 @@ public class OrderinfoServiceImpl extends ServiceImpl<OrderinfoMapper, Orderinfo
 
         return flag;
     }
+
     // 确认订单方法（已经支付成功）
     @Override
     public boolean ensureOrder(String orderId,Integer status,Integer ticketId) {
 
         boolean flag = false;
-        logger = LoggerFactory.getLogger(OrderinfoServiceImpl.class);
 
         logger.info("查询机票余票");
-        String seat = updateOrder(ticketId, status);
+        Ticket ticket = updateOrder(ticketId, 0);
         // 判断如果没有机票直接返回false
-        if (seat == null)
-            return flag;
+        if (ticket == null)
+            return false;
 
         logger.info("开始更新订单");
 
         UpdateWrapper<Orderinfo> updateWrapper = new UpdateWrapper<>();
 
         updateWrapper.set("status",status);
-        updateWrapper.set("seat",seat);
+        updateWrapper.set("seat",ticket.getSeat());
+        // 更新订单信息中的机票id为具体出票后的机票id
+        updateWrapper.set("ticket_id",ticket.getId());
         updateWrapper.eq("order_id",orderId);
 
         int update = orderinfoMapper.update(null, updateWrapper);
@@ -108,39 +115,41 @@ public class OrderinfoServiceImpl extends ServiceImpl<OrderinfoMapper, Orderinfo
         if (update > 0)
             flag = true;
 
-        if (status == 2 && flag == true)
+        if (status == 2 && flag)
             logger.info("确认订单成功");
-        if (status == 3 && flag == true)
+        if (status == 3 && flag)
             logger.info("下单成功");
 
         return flag;
     }
 
     /**
-     * 确认订单时需要随机出票，需要查询出具体机票的座位信息,同时删除这张机票的信息
-     * @param ticketId
-     * @param staus
-     * @return
+     * 确认订单时需要随机出票，需要查询出具体机票的座位信息,同时修改这张具体带有座位机票的状态（标记为已经被购买）
+     * @param ticketId 机票id
+     * @param status 符合条件的机票状态（0 代表可以购买）
+     * @return 座位信息
      */
     @Override
-    public String updateOrder(Integer ticketId, Integer staus) {
+    public Ticket updateOrder(Integer ticketId, Integer status) {
 
-        logger = LoggerFactory.getLogger(OrderinfoServiceImpl.class);
         logger.info("开始查询具体的余票信息，并随机返回一张座位机票");
-        QueryWrapper<Ticket> ticketQueryWrapper = new QueryWrapper<>();
+        QueryWrapper<Ticket> queryWrapper = new QueryWrapper<>();
 
-        ticketQueryWrapper.select("seat");
         // 后面跟上last方法可补充我们想要的结尾sql，在这里分页查询只显示一条机票信息
-        ticketQueryWrapper.eq("parentid",ticketId).last("limit 1");
+        queryWrapper.eq("ticket_status",status);
+        queryWrapper.eq("parentid",ticketId).last("limit 1");
+
         logger.info("进行随机出票");
-        Ticket ticket = ticketMapper.selectOne(ticketQueryWrapper);
-//        logger.info("删除这张机票");
-//        ticketMapper.delete(ticketQueryWrapper);
-        if (ticket == null)
-            return null;
-        else
-            return ticket.getSeat();
+
+        Ticket ticket = ticketMapper.selectOne(queryWrapper);
+        AtomicReference<Integer> id = new AtomicReference<>(ticket.getId());
+        // 将随机出票的机票id获取到，用于将此张机票的状态置1（代表已购买）
+        ticketService.updateTicket(id,1);
+
+        logger.info("随机出票完成");
+        return ticket;
     }
+
 
     /**
      * 根据用户id查询所有订单
@@ -151,14 +160,14 @@ public class OrderinfoServiceImpl extends ServiceImpl<OrderinfoMapper, Orderinfo
     public List<Orderinfo> findAllOrder(Integer userId) {
 
         List<Orderinfo> orderinfoList;
-        logger = LoggerFactory.getLogger(OrderinfoServiceImpl.class);
-        QueryWrapper<Orderinfo> orderinfoQueryWrapper = new QueryWrapper<>();
+
+        QueryWrapper<Orderinfo> queryWrapper = new QueryWrapper<>();
 
         logger.info("开始查询所有已完成订单");
-        orderinfoQueryWrapper.eq("user_id",userId);
-        orderinfoQueryWrapper.eq("status",2);
+        queryWrapper.eq("user_id",userId);
+        queryWrapper.eq("status",2);
 
-        orderinfoList = orderinfoMapper.selectList(orderinfoQueryWrapper);
+        orderinfoList = orderinfoMapper.selectList(queryWrapper);
         logger.info("查询结束并已缓存");
 
         return orderinfoList;
@@ -170,10 +179,10 @@ public class OrderinfoServiceImpl extends ServiceImpl<OrderinfoMapper, Orderinfo
      * @param orderId
      * @return
      */
+
+    private static int update = 0;
     @Override
     public boolean deleteOrder(String orderId, Integer userId) {
-
-        logger = LoggerFactory.getLogger(OrderinfoServiceImpl.class);
 
         QueryWrapper<Orderinfo> queryWrapper = new QueryWrapper<>();
 
@@ -182,6 +191,8 @@ public class OrderinfoServiceImpl extends ServiceImpl<OrderinfoMapper, Orderinfo
         // 查询出来我们要退订的机票后
         logger.info("开始查询要退订的订单");
         Orderinfo orderinfo = orderinfoMapper.selectOne(queryWrapper);
+        // 获取ticketid用来更新机票状态
+        AtomicReference<Integer> ticketId = new AtomicReference<>(orderinfo.getTicketId());
         //开始校验机票时间是否已经超过了当前时间（稍后进行补充，同时前端部分也要进行时间的校验进行拦截）
         logger.info("进行订单失效时间的判断");
         // 进行订单状态的改变
@@ -189,17 +200,46 @@ public class OrderinfoServiceImpl extends ServiceImpl<OrderinfoMapper, Orderinfo
         UpdateWrapper<Orderinfo> updateWrapper = new UpdateWrapper<>();
         // 更新已经退订的订单状态为3
         updateWrapper.set("status",3);
-
-        int update = orderinfoMapper.update(null, updateWrapper);
+        // 开启重置订单状态的线程
+        Thread updateOrder = new Thread(()-> update = orderinfoMapper.update(null, updateWrapper),"updateOrder");
+        updateOrder.start();
+        // 开启重置机票状态的线程
+        Thread updateTicket0 = new Thread(() -> ticketService.updateTicket(ticketId,0),"updateTicket");
+        updateTicket0.start();
+        try {
+            updateOrder.join();
+            updateTicket0.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
 
         if (update > 0){
 
             return true;
 
-        }
+        }else {
 
-        return false;
+            return false;
+
+        }
     }
 
+    /**
+     * 根据用户id查询所有已完成订单的行程
+     * @param userId 用户id
+     * @return 机票信息集合
+     */
+    @Override
+    public List<Ticket> findMyRoute(Integer userId) {
+
+        List<Ticket> myRoute = new ArrayList<>();
+        // 如果当前没有登录的账户（也就是id为0）此时直接返回空集合
+        if (userId == 0) return myRoute;
+        logger.info("开始查询我的行程");
+        // 使用mapper注解进行sql的定义，由于使用了多表联查
+        myRoute = orderinfoMapper.findMyRoute(userId);
+
+        return myRoute;
+    }
 
 }

@@ -83,4 +83,9 @@ public class Ticket implements Serializable {
      */
     private String endTime;
 
+    /**
+     * 机票状态
+     */
+    private Integer ticketStatus;
+
 }

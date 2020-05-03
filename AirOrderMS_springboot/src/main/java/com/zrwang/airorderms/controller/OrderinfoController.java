@@ -2,11 +2,13 @@ package com.zrwang.airorderms.controller;
 
 
 import com.zrwang.airorderms.entity.Orderinfo;
+import com.zrwang.airorderms.entity.Ticket;
 import com.zrwang.airorderms.entity.dto.CreateOrderInfo;
 import com.zrwang.airorderms.entity.dto.EnsureOrder;
 import com.zrwang.airorderms.service.OrderinfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
@@ -89,8 +91,8 @@ public class OrderinfoController {
      * @return
      */
     @CacheEvict(cacheManager = "redisCacheManager", allEntries = false,beforeInvocation = true, cacheNames = "orders",key = "#userId")
-    @DeleteMapping("orderinfo")
-    public List<Orderinfo> deleteOrder(String orderId, Integer userId){
+    @DeleteMapping("/orderinfo")
+    public boolean deleteOrder(String orderId, Integer userId){
 
         boolean flag = false;
         List<Orderinfo> allOrder = new ArrayList<>();
@@ -103,8 +105,19 @@ public class OrderinfoController {
 
         }
 
-        return allOrder;
+        return flag;
     }
+
+    @Cacheable(cacheNames = "myRoute", cacheManager = "redisCacheManager" , key = "#userId")
+    @GetMapping("/orderinfo/{id}")
+    public List<Ticket> findMyRoute(@PathVariable(value = "id") Integer  userId ) {
+
+        List<Ticket> myRoute = orderinfoService.findMyRoute(userId);
+
+        return myRoute;
+    }
+
+//    @GetMapping("/orderinfo/{userId}/{ticketId}")
 
 }
 

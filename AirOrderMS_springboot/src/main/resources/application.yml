@@ -55,3 +55,7 @@ logging:
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: true
+#    配置扫描mapper.xml的路径
+  mapper-locations: classpath:airorderms/mapper/*.xml
+  type-aliases-package: com.zrwang.airorderms.entity
+

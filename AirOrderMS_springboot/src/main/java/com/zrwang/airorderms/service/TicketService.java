@@ -8,6 +8,7 @@ import com.zrwang.airorderms.entity.dto.TicketConditions;
 
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * <p>
@@ -40,4 +41,10 @@ public interface TicketService extends IService<Ticket> {
      * @return
      */
     Map<String,Object> showAllByPage(Integer currentPage, Integer pageCounts);
+
+    /**
+     * 更新机票状态
+     * @param id
+     */
+    void updateTicket(AtomicReference<Integer> id ,Integer status);
 }
